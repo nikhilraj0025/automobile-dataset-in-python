@@ -1,0 +1,92 @@
+import pandas as pd
+import numpy as np
+auto=pd.read_csv(r"C:\Users\AKHIL\Desktop\R csv\Automobile Data Set.csv")
+auto
+auto.mean()
+#auto.shape
+auto.losses.replace('?',np.NaN,inplace=True)
+auto.bore.replace('?',np.NaN,inplace=True)
+auto.stroke.replace('?',np.NaN,inplace=True)
+auto.horsepower.replace('?',np.NaN,inplace=True)
+auto.peak.replace('?',np.NaN,inplace=True)
+auto.price.replace('?',np.NaN,inplace=True)
+auto.head()
+auto.mean()
+#auto['losses'] = auto['losses'].fillna((auto['losses'].mean()))
+aa=auto.losses.dropna()
+aa1=aa.astype("float")
+aa1.mean()
+bb=auto.bore.dropna()
+bb1=bb.astype("float")
+bb1.mean()
+cc=auto.stroke.dropna()
+cc1=cc.astype("float")
+cc1.mean()
+dd=auto.horsepower.dropna()
+dd1=dd.astype("float")
+dd1.mean()
+ee=auto.peak.dropna()
+ee1=ee.astype("float")
+ee1.mean()
+ff=auto.price.dropna()
+ff1=ff.astype("float")
+ff1.mean()
+#auto.losses.replace({"NaN":122.0},inplace=True)
+#auto.head()
+auto.losses.fillna(122, inplace=True)
+auto.bore.fillna(3.329, inplace=True)
+auto.stroke.fillna(3.255, inplace=True)
+auto.horsepower.fillna(104.25, inplace=True)
+auto.peak.fillna(5125.36, inplace=True)
+auto.price.fillna(13207.12, inplace=True)
+autoauto.head()
+aa=auto.rename(columns={auto.columns[3]:"fuelt"})
+aa
+cat=aa.loc[:,["make","fuelt","aspiration","doors","style","wheels","location","engine","cylinders","fuel"]]
+cat
+from sklearn.preprocessing import LabelEncoder
+auto_1=cat.apply(LabelEncoder().fit_transform)
+auto_1.head()
+auto_1=pd.DataFrame(auto_1)
+auto_2=auto.iloc[:,[0,1,9,10,11,12,13,16,18,19,20,21,22,23,24,25]]
+Auto=pd.concat([auto_2,auto_1],axis=1)
+Auto.head()
+Auto.plot(kind='hist')
+ab=auto.doors.replace('?',np.NaN)
+ab
+ab.value_counts()
+ab1=ab.fillna("four")
+ab1.value_counts()
+ab1
+Auto_x=Auto.iloc[:,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24,25]]
+Auto_y=Auto.price.astype("float")
+Auto_x=Auto_x.astype("float")
+import sklearn
+from sklearn.model_selection import train_test_split
+Auto_x_train,Auto_x_test,Auto_y_train,Auto_y_test=train_test_split(Auto_x,Auto_y,test_size=.2,random_state=101)
+print(Auto_x_train.shape)###### checking no of rows in test and train are same ####
+print(Auto_y_train.shape)
+print(Auto_x_test.shape)
+print(Auto_y_test.shape)
+###########################################################################################################################
+from sklearn import linear_model
+import statsmodels.formula.api as sm
+
+mt_model=sm.OLS(Auto_y_train,Auto_x_train).fit()
+mt_model.summary()
+
+mt_predict=mt_model.predict(Auto_x_test)
+mt_predict
+
+
+pred_actual1=pd.DataFrame({'predicted':mt_predict,'actual':Auto_y_test})
+pred_actual1.head()
+
+
+from sklearn import metrics
+mt_MAE=metrics.mean_absolute_error(Auto_y_test,mt_predict)
+print(mt_MAE)
+
+mt_MSE=metrics.mean_squared_error(Auto_y_test,mt_predict)
+print(mt_MSE)
+print(pow(mt_MSE,.5))
